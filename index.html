@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Task Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 8px;
+    }
+
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .filters {
+      margin: 15px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: white;
+      padding: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .completed span {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .stats {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📝 Interactive Task Manager</h1>
+
+  <form id="taskForm">
+    <input type="text" id="taskInput" placeholder="Enter a task" required>
+    <button type="submit">Add</button>
+  </form>
+
+  <div class="filters">
+    <button onclick="setFilter('all')">All</button>
+    <button onclick="setFilter('active')">Active</button>
+    <button onclick="setFilter('completed')">Completed</button>
+  </div>
+
+  <ul id="taskList"></ul>
+
+  <div class="stats">
+    Total: <span id="total">0</span> |
+    Active: <span id="active">0</span> |
+    Completed: <span id="completed">0</span>
+  </div>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let currentFilter = "all";
+
+    const form = document.getElementById("taskForm");
+    const input = document.getElementById("taskInput");
+    const list = document.getElementById("taskList");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      tasks.push({
+        id: Date.now(),
+        text: input.value,
+        completed: false
+      });
+
+      input.value = "";
+      saveAndRender();
+    });
+
+    function toggleTask(id) {
+      tasks = tasks.map(task =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      );
+      saveAndRender();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(task => task.id !== id);
+      saveAndRender();
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      render();
+    }
+
+    function saveAndRender() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      render();
+    }
+
+    function render() {
+      list.innerHTML = "";
+
+      let filteredTasks = tasks;
+      if (currentFilter === "active")
+        filteredTasks = tasks.filter(t => !t.completed);
+      if (currentFilter === "completed")
+        filteredTasks = tasks.filter(t => t.completed);
+
+      filteredTasks.forEach(task => {
+        const li = document.createElement("li");
+        if (task.completed) li.classList.add("completed");
+
+        li.innerHTML = `
+          <input type="checkbox" ${task.completed ? "checked" : ""}
+            onclick="toggleTask(${task.id})">
+          <span>${task.text}</span>
+          <button onclick="deleteTask(${task.id})">❌</button>
+        `;
+
+        list.appendChild(li);
+      });
+
+      document.getElementById("total").textContent = tasks.length;
+      document.getElementById("completed").textContent =
+        tasks.filter(t => t.completed).length;
+      document.getElementById("active").textContent =
+        tasks.filter(t => !t.completed).length;
+    }
+
+    render();
+  </script>
+
+</body>
+</html>
