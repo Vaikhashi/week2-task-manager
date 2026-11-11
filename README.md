@@ -1,26 +1,12 @@
-# Interactive Task Manager
+# Task manager
 
-A simple interactive task manager built using **vanilla JavaScript** as part of Week 2 (JavaScript Fundamentals).  
-This project demonstrates core concepts like DOM manipulation, event handling, and data persistence using localStorage.
+A to-do list in plain JavaScript. Week 2 of a web development course I followed.
 
-## Features
 - Add and delete tasks
-- Mark tasks as complete or incomplete
-- Filter tasks (All, Active, Completed)
-- Persistent data using browser localStorage
-- Dynamic UI updates without page reload
+- Tick tasks off
+- Filter by all, active or completed
+- Tasks are saved in localStorage, so they're still there after a reload
 
-## Technologies Used
-- HTML5
-- CSS3
-- JavaScript (ES6)
+Try it: https://vaikhashi.github.io/week2-task-manager/
 
-## How to Run
-1. Clone or download the repository
-2. Open `index.html` in any modern web browser
-3. Start managing your tasks
-
-## Learning Outcome
-- Hands-on experience with JavaScript DOM manipulation
-- Understanding event-driven programming
-- Working with arrays, objects, and localStorage
+Everything is in one `index.html`. To run it locally, open that file in a browser.
